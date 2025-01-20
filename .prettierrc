@@ -1,0 +1,15 @@
+{
+  "prettier/prettier": [
+    "error",
+    {
+      "singleQuote": false,
+      "parser": "flow",
+      "endOfLine": "auto"
+    },
+    {
+      "fileInfoOptions": {
+        "withNodeModules": false
+      }
+    }
+  ]
+}
