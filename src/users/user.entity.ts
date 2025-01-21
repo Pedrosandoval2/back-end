@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm"
 
 @Entity({ name: 'users' })
 
@@ -7,17 +7,17 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({
-        // Para que sea unico
-        unique: true
-    })
+    @Column()
     username: string
 
-    @Column()
-    password: string
+    @Column({
+        unique: true,
+        nullable: false
+    })
+    email: string
 
-    @Column()
-    country: string
+    @Column({nullable: false})
+    password: string
 
     @Column({
         type: 'datetime',
@@ -26,11 +26,11 @@ export class User {
     })
     createdAt: Date
 
-    @Column({
-        // Para que no siempre tenga que mandar el valor
-        nullable: true
-    })
-    authStrategy: string
+    // // Para relacionar 2 tablas de datos
+    // @OneToOne(() => Profile)
+    // //  Para unir las 2 tablas
+    // @JoinColumn()
+    // profile: Profile
 }
 
     // Se puede hacer esto o como el anterior, creo que la diferencia es que tengo que instalar dependencia.
