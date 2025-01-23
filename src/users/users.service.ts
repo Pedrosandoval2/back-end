@@ -5,6 +5,10 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+import * as bycryptjs from 'bcryptjs';
+import { hasSpaces } from './util/hasSpaces';
+import { LoginDto } from 'src/auth/dto/login.dto';
+
 @Injectable()
 export class UsersService {
     constructor(
@@ -14,21 +18,46 @@ export class UsersService {
 
     ) { }
 
-    async createUser(user: CreateUserDto) {
+    /******************************** Login ************************************/
 
+    async createUser({ email, password, username }: CreateUserDto) {
         // Validando si el usuario ya existe para hacer el manejo del error en caso ya exista
         const userFound = await this.userRepository.findOne({
             where: {
-                username: user.username
+                username
             }
         })
 
         if (userFound) {
             return new HttpException('User alreday exists', HttpStatus.CONFLICT)
         }
-        const newUser = this.userRepository.create(user);
+
+        if (hasSpaces(password)) {
+            return new HttpException('Error in password', HttpStatus.CONFLICT)
+        }
+        const newUser = this.userRepository.create({
+            email,
+            password: await bycryptjs.hash(password, 12),
+            username
+        });
         return this.userRepository.save(newUser)
     }
+
+    async findOneByEmail({email, password}: LoginDto) {
+        const userFound =  await this.userRepository.findOneBy({email})
+
+        if (!userFound) {
+            return new HttpException('user not found', HttpStatus.CONFLICT)
+        }
+
+        if (hasSpaces(password)) {
+            return new HttpException('password does not match', HttpStatus.CONFLICT)
+        }
+
+        return userFound
+    }
+
+    /******************************** Usuario ************************************/
 
     getUsers() {
         return this.userRepository.find()
