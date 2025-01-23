@@ -19,11 +19,6 @@ export class UsersController {
         return this.usersService.getUser(id);
     }
 
-    @Post()
-    createUser(@Body() newUser: CreateUserDto) {
-        return this.usersService.createUser(newUser)
-    }
-
     @Delete(':id')
     deleteUser(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.deleteUser(id);
