@@ -11,11 +11,11 @@ export class AuthService {
     ) { }
 
     async register(user: CreateUserDto) {
-        return await this.usersService.createUser(user)
+        return await this.usersService.register(user)
     }
 
     async login({email, password}: LoginDto) {
-        return await this.usersService.findOneByEmail({email, password})
+        return await this.usersService.signIn({email, password})
     }
 
 }
